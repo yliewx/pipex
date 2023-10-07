@@ -6,7 +6,7 @@
 /*   By: yliew <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:25:15 by yliew             #+#    #+#             */
-/*   Updated: 2023/10/07 18:43:55 by yliew            ###   ########.fr       */
+/*   Updated: 2023/10/07 19:08:44 by yliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,8 @@ void	process_handler(char *command, char *file)
 	if (pid1 == 0)
 	{
 		ft_printf("testing output fork; pid: %i\n", pid1);
-		close(pipefd[0]);
 		//replace stdout with pipe write end
-		if (dup2(pipefd[1], 1) == -1)
-		{
-			perror("dup2");
-			exit(EXIT_FAILURE);
-		}
-		close(pipefd[1]);
+		pipe_handler(pipefd[1], pipefd[0], 1);
 		cat_file(file);
 		exit(EXIT_SUCCESS);
 	}
@@ -60,14 +54,8 @@ void	process_handler(char *command, char *file)
 		}
 		if (pid2 == 0)
 		{
-			close(pipefd[1]);
 			//replace stdin with pipe read end
-			if (dup2(pipefd[0], 0) == -1)
-			{
-				perror("dup2");
-				exit(EXIT_FAILURE);
-			}
-			close(pipefd[0]);
+			pipe_handler(pipefd[0], pipefd[1], 0);
 			execute_command(command, file);
 			exit(EXIT_SUCCESS);
 		}

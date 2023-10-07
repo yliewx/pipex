@@ -6,7 +6,7 @@
 /*   By: yliew <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/06 12:43:59 by yliew             #+#    #+#             */
-/*   Updated: 2023/10/07 18:17:06 by yliew            ###   ########.fr       */
+/*   Updated: 2023/10/07 19:09:00 by yliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,5 +27,6 @@ char	*ft_strjoin(char const *s1, char const *s2);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 void	cat_file(char *file);
 void	execute_command(char *command, char *file);
+int	pipe_handler(int current_end, int other_end, int std_fd);
 
 #endif

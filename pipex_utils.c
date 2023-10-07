@@ -6,11 +6,23 @@
 /*   By: yliew <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/07 18:05:30 by yliew             #+#    #+#             */
-/*   Updated: 2023/10/07 18:15:52 by yliew            ###   ########.fr       */
+/*   Updated: 2023/10/07 19:08:20 by yliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+
+int	pipe_handler(int current_end, int other_end, int std_fd)
+{
+	close(other_end);
+	if (dup2(current_end, std_fd) == -1)
+	{
+		perror("dup2");
+		exit(EXIT_FAILURE);
+	}
+	close(current_end);
+	return (1);
+}
 
 void	cat_file(char *file)
 {
