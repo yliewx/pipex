@@ -10,7 +10,7 @@ RM = rm -f
 LIB_DIR = libft
 
 # pipex targets
-SRCS = pipex.c pipex_utils.c
+SRCS = pipex.c pipe_utils.c command_utils.c
 
 # libft targets
 LIB_TARGET = ft_atoi.c ft_bzero.c ft_calloc.c ft_isalnum.c ft_isalpha.c \

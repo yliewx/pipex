@@ -19,7 +19,8 @@ TARGET = ft_atoi.c ft_bzero.c ft_calloc.c ft_isalnum.c ft_isalpha.c \
 	ft_strtrim.c ft_substr.c ft_tolower.c ft_toupper.c \
 	ft_lstadd_back.c ft_lstadd_front.c ft_lstclear.c ft_lstdelone.c \
 	ft_lstiter.c ft_lstlast.c ft_lstmap.c ft_lstnew.c ft_lstsize.c \
-	ft_printf.c ft_putchar.c ft_putstr.c ft_putnbr.c ft_puthex.c
+	ft_printf.c ft_putchar.c ft_putstr.c ft_putnbr.c ft_puthex.c \
+	get_next_line.c get_next_line_utils.c
 
 # source files & object files
 SRCS = $(addprefix $(DIR)/, $(TARGET))

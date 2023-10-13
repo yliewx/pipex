@@ -6,87 +6,71 @@
 /*   By: yliew <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 18:25:15 by yliew             #+#    #+#             */
-/*   Updated: 2023/10/07 19:08:44 by yliew            ###   ########.fr       */
+/*   Updated: 2023/10/13 18:46:54 by yliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "pipex.h"
 
-void	process_handler(char *command, char *file)
+void	perror_exit(char *message, int exit_code)
 {
-	pid_t	pid1;
-	pid_t	pid2;
-	pid_t	ended_pid1;
-	pid_t	ended_pid2;
-	int	pipefd[2];
+	perror(message);
+	exit(exit_code);
+}
 
-	ft_printf("%s can be read. Command: %s\n", file, command);
-	//create pipe
-	if (pipe(pipefd) == -1)
+void	check_exit_status(int child_exit_code)
+{
+	int	child_exit_status;
+
+	if (WIFEXITED(child_exit_code))
 	{
-		perror("pipe");
-		exit(EXIT_FAILURE);
-	}
-	//1st fork: cat file
-	pid1 = fork();
-	if (pid1 == -1)
-	{
-		perror("fork");
-		exit(EXIT_FAILURE);
-	}
-	if (pid1 == 0)
-	{
-		ft_printf("testing output fork; pid: %i\n", pid1);
-		//replace stdout with pipe write end
-		pipe_handler(pipefd[1], pipefd[0], 1);
-		cat_file(file);
-		exit(EXIT_SUCCESS);
-	}
-	//2nd fork: execute command on the output of 1st process
-	else
-	{
-		ended_pid1 = waitpid(pid1, NULL, 0);
-		pid2 = fork();
-		if (pid2 == -1)
-		{
-			perror("fork");
-			exit(EXIT_FAILURE);
-		}
-		if (pid2 == 0)
-		{
-			//replace stdin with pipe read end
-			pipe_handler(pipefd[0], pipefd[1], 0);
-			execute_command(command, file);
-			exit(EXIT_SUCCESS);
-		}
-		else
-		{
-			close(pipefd[0]);
-			close(pipefd[1]);
-			ended_pid2 = waitpid(pid2, NULL, 0);
-			printf("ended pids: %i, %i\n", ended_pid1, ended_pid2);
-		}
+		child_exit_status = WEXITSTATUS(child_exit_code);
+		if (child_exit_status != 0)
+			exit(child_exit_status);
 	}
 }
 
-int	main(int argc, char **argv)
+//check error codes
+void	process_handler(char **argv, int index, int input_fd, char **envp)
 {
-	char	*file1;
-	char	*command1;
+	pid_t	pid;
+	int		pipefd[2];
+	int		outfile;
+	int		child_exit_code;
 
-	if (argc != 3)
+	if (pipe(pipefd) == -1)
+		perror_exit("Pipe failed", EXIT_FAILURE);
+	pid = fork();
+	if (pid == -1)
+		perror_exit("Fork failed", EXIT_FAILURE);
+	if (pid == 0)
 	{
-		ft_printf("Please enter 2 arguments.\n");
-		return (0);
+		read_pipe_handler(pipefd, input_fd);
+		write_pipe_handler(argv, index, pipefd, &outfile);
+		command_handler(argv, index, envp);
 	}
-	file1 = argv[1];
-	command1 = argv[2];
-	if (access(file1, R_OK) != 0)
+	close_pipes(pipefd[1], input_fd);
+	if (argv[index + 2] == NULL)
 	{
-		perror("access");
+		waitpid(pid, &child_exit_code, 0);
+		close_pipes(input_fd, outfile);
+		check_exit_status(child_exit_code);
 		exit(EXIT_SUCCESS);
 	}
-	process_handler(command1, file1);
-	ft_printf("end of test\n");
-	return (0);
+	process_handler(argv, index + 1, pipefd[0], envp);
+}
+
+int	main(int argc, char **argv, char **envp)
+{
+	int	input_fd;
+
+	if (argc != 5)
+	{
+		ft_putstr_fd("Please enter 4 arguments.", 2);
+		return (1);
+	}
+	input_fd = open(argv[1], O_RDONLY);
+	if (input_fd == -1)
+		perror("Cannot open file");
+	process_handler(argv, 2, input_fd, envp);
+	return (1);
 }
