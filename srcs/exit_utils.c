@@ -1,30 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   exit_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yliew <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/18 14:29:08 by yliew             #+#    #+#             */
-/*   Updated: 2023/10/16 15:39:27 by yliew            ###   ########.fr       */
+/*   Created: 2023/10/07 18:05:30 by yliew             #+#    #+#             */
+/*   Updated: 2023/10/16 14:01:09 by yliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#include "pipex.h"
 
-# include "libft.h"
-# include <stdio.h>
-# include <stdlib.h>
-# include <stdint.h>
-# include <unistd.h>
-# include <sys/stat.h>
-# include <fcntl.h>
+void	perror_exit(char *message, int exit_code)
+{
+	perror(message);
+	exit(exit_code);
+}
 
-char	*get_next_line(int fd);
+void	check_exit_status(int child_exit_code)
+{
+	int	status;
 
-# ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 100
-# endif
+	if (WIFEXITED(child_exit_code))
+	{
+		status = WEXITSTATUS(child_exit_code);
+		if (status != 0)
+			exit(status);
+	}
+}
 
-#endif
+void	close_pipes(int pipe1, int pipe2)
+{
+	close(pipe1);
+	close(pipe2);
+}

@@ -8,9 +8,14 @@ RM = rm -f
 
 # source directories
 LIB_DIR = libft
+INC = includes
 
 # pipex targets
-SRCS = pipex.c pipe_utils.c command_utils.c
+TARGET = pipex.c command_utils.c exit_utils.c pipe_utils.c
+SRCS = $(addprefix srcs/, $(TARGET))
+BONUS_TARGET = pipex_bonus.c command_utils_bonus.c exit_utils_bonus.c \
+	heredoc_bonus.c pipe_utils_bonus.c
+BONUS_SRCS = $(addprefix srcs_bonus/, $(BONUS_TARGET))
 
 # libft targets
 LIB_TARGET = ft_atoi.c ft_bzero.c ft_calloc.c ft_isalnum.c ft_isalpha.c \
@@ -22,7 +27,8 @@ LIB_TARGET = ft_atoi.c ft_bzero.c ft_calloc.c ft_isalnum.c ft_isalpha.c \
 	ft_strtrim.c ft_substr.c ft_tolower.c ft_toupper.c \
 	ft_lstadd_back.c ft_lstadd_front.c ft_lstclear.c ft_lstdelone.c \
 	ft_lstiter.c ft_lstlast.c ft_lstmap.c ft_lstnew.c ft_lstsize.c \
-	ft_printf.c ft_putchar.c ft_putstr.c ft_putnbr.c ft_puthex.c
+	ft_printf.c ft_putchar.c ft_putstr.c ft_putnbr.c ft_puthex.c \
+	get_next_line.c
 LIB_SRCS = $(addprefix srcs/, $(LIB_TARGET))
 LIB_OBJS = $(LIB_SRCS:.c=.o)
 
@@ -35,11 +41,15 @@ END = \033[0m
 
 # RULES
 # all = create library from sub-make
-all: $(LIB_NAME) $(NAME)
+all: $(LIB_NAME)
 
-$(NAME): $(SRCS)
-	@$(CC) $(CFLAGS) $(SRCS) -o $(NAME) -L $(LIB_DIR) -l ft
+mandatory: $(SRCS) $(LIB_NAME)
+	@$(CC) $(CFLAGS) $(SRCS) -o $(NAME) -I $(INC) -L $(LIB_DIR) -l ft
 	@echo "$(B_GREEN)$(NAME) compiled.$(END)"
+
+bonus: $(BONUS_SRCS) $(LIB_NAME)
+	@$(CC) $(CFLAGS) $(BONUS_SRCS) -o $(NAME) -I $(INC) -L $(LIB_DIR) -l ft
+	@echo "$(B_GREEN)$(NAME) bonus compiled.$(END)"
 
 $(LIB_NAME):
 	cd $(LIB_DIR) && $(MAKE)
@@ -49,10 +59,10 @@ clean:
 	@cd $(LIB_DIR) && $(RM) $(LIB_OBJS)
 	@echo "$(B_GREEN)Removed all obj files.$(END)"
 
-# clean + remove library
+# remove library and executable file
 fclean: clean
 	@$(RM) $(NAME) && cd $(LIB_DIR) && $(RM) $(LIB_NAME)
 	@echo "$(B_GREEN)Removed $(NAME) and $(LIB_NAME).$(END)"
 
 # declare phony
-.PHONY: all clean fclean re test
+.PHONY: all bonus clean fclean mandatory re

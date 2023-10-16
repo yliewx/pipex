@@ -6,7 +6,7 @@
 /*   By: yliew <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/05 18:09:44 by yliew             #+#    #+#             */
-/*   Updated: 2023/09/13 13:42:39 by yliew            ###   ########.fr       */
+/*   Updated: 2023/10/16 14:32:24 by yliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,8 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
-# include <bsd/string.h>
 # include <ctype.h>
 # include <limits.h>
-# include <malloc.h>
 # include <unistd.h>
 
 /*<ctype.h>*/
