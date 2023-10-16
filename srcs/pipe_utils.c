@@ -6,13 +6,14 @@
 /*   By: yliew <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/16 17:33:22 by yliew             #+#    #+#             */
-/*   Updated: 2023/10/16 17:33:35 by yliew            ###   ########.fr       */
+/*   Updated: 2023/10/16 18:42:51 by yliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-/*child process: replace stdin with the read end of the pipe*/
+/*child process:
+- replace stdin with the read end of the pipe (input_fd)*/
 void	read_pipe_handler(int *pipefd, int input_fd)
 {
 	close(pipefd[0]);
@@ -20,7 +21,8 @@ void	read_pipe_handler(int *pipefd, int input_fd)
 		perror_exit("Stdin redirection failed", EXIT_FAILURE);
 }
 
-/*child process: replace stdout with the write end of the pipe
+/*child process:
+- replace stdout with the write end of the pipe (pipefd[1])
 - if at the last command, replace stdout with outfile*/
 void	write_pipe_handler(char **argv, int index, int *pipefd, int *outfile)
 {

@@ -41,7 +41,7 @@ END = \033[0m
 
 # RULES
 # all = create library from sub-make
-all: $(LIB_NAME)
+all: $(LIB_NAME) mandatory
 
 mandatory: $(SRCS) $(LIB_NAME)
 	@$(CC) $(CFLAGS) $(SRCS) -o $(NAME) -I $(INC) -L $(LIB_DIR) -l ft
