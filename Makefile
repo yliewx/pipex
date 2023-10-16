@@ -64,5 +64,7 @@ fclean: clean
 	@$(RM) $(NAME) && cd $(LIB_DIR) && $(RM) $(LIB_NAME)
 	@echo "$(B_GREEN)Removed $(NAME) and $(LIB_NAME).$(END)"
 
+re: fclean all
+
 # declare phony
 .PHONY: all bonus clean fclean mandatory re
