@@ -6,7 +6,7 @@
 /*   By: yliew <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/16 17:29:06 by yliew             #+#    #+#             */
-/*   Updated: 2023/10/16 17:55:41 by yliew            ###   ########.fr       */
+/*   Updated: 2023/10/18 14:40:12 by yliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ void	write_heredoc(char *limiter, int *pipefd)
 		ft_putstr_fd("pipe heredoc> ", STDOUT_FILENO);
 		current_line = get_next_line(STDIN_FILENO);
 		if (ft_strncmp(current_line, limiter,
-				ft_strlen(current_line) - 1) == 0)
+				ft_strlen(current_line) - 1) == 0
+			&& ft_strlen(current_line) - 1 == ft_strlen(limiter))
 		{
 			free(current_line);
 			close(pipefd[1]);
@@ -43,7 +44,7 @@ void	write_heredoc(char *limiter, int *pipefd)
 - next child will read from that input_fd to execute commands*/
 void	redirect_heredoc(int *pipefd)
 {
-	close (pipefd[1]);
+	close(pipefd[1]);
 	if (dup2(pipefd[0], STDIN_FILENO) == -1)
 		perror_exit("Stdin redirection failed", EXIT_FAILURE);
 }

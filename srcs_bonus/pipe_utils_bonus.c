@@ -6,7 +6,7 @@
 /*   By: yliew <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/16 15:56:24 by yliew             #+#    #+#             */
-/*   Updated: 2023/10/16 17:28:04 by yliew            ###   ########.fr       */
+/*   Updated: 2023/10/18 14:34:01 by yliew            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,16 @@ void	write_pipe_handler(char **argv, int index, int *pipefd, int *outfile)
 {
 	if (argv[index + 2] == NULL)
 	{
-		*outfile = open(argv[index + 1],
-				O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		if (ft_strncmp(argv[1], "here_doc", ft_strlen(argv[1])) == 0)
+		{
+			*outfile = open(argv[index + 1],
+					O_WRONLY | O_CREAT | O_APPEND, 0644);
+		}
+		else
+		{
+			*outfile = open(argv[index + 1],
+					O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		}
 		if (*outfile == -1)
 			perror("Error opening outfile");
 		if (dup2(*outfile, STDOUT_FILENO) == -1)
